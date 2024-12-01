@@ -143,9 +143,14 @@ class AnimalTable {
          animal.location = location;
          animal.size = size;
          animal.image = image;
-         animal.animalType = type;
-		
-         this.render();
+         animal.animalType = type;		 
+
+		 let duplicateError;
+		 if(Animal.checkDuplicateAnimal(species,newName, location, size,type)){
+			duplicateError="Duplicate animal";
+			return alert(duplicateError) ;	
+		  }	
+          this.render();
        }
      } 
 	 
