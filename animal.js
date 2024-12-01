@@ -45,6 +45,22 @@ class Animal {
   getStyledName() {
     return this.name; 
   }
+  
+   //Validate size
+  static validateSize(size) {
+	
+      // Check if size is empty
+      if (!size) {
+        return 'Size cannot be empty.';      }
+
+      // Check if size is a valid number
+      const parsedSize = parseInt(size); 
+      if (isNaN(parsedSize) || parsedSize <= 0) {
+        return 'Size must be a valid positive number.';
+      }
+
+      return null; // No error, size is valid
+    }
 }
 
 // child classes (BigCat, Dog, BigFish)
@@ -93,26 +109,7 @@ class AnimalTable {
 	   };
   }
   
- /* editAnimalTest(oldName) {
-  const animal = this.data.find(a => a.name === oldName);
-
-     if (animal) {
-       const newName = prompt("Edit name:", animal.name);
-       const newLocation = prompt("Edit location:", animal.location);
-       const newSize = prompt("Edit size:", animal.size);
-       const newImage = prompt("Edit image URL:", animal.image);
-       const newType = prompt("Edit animal type (bigCat, dog, bigFish):", animal.type);
-
-       // Update the animal's details
-       animal.name = newName;
-       animal.location = newLocation;
-       animal.size = newSize;
-       animal.image = newImage;
-       animal.type = newType;
-
-       this.render(); // Re-render after editing
-     }
-   }*/
+  
    //Method to edit animal record
    editAnimal(species,name,newName, location, size, image, type) {
        const animal = this.data.find(animal => animal.name === name);
@@ -234,7 +231,21 @@ document.getElementById('add-animal').addEventListener('click', () => {
 	const species = prompt("Enter animal species: Big Cats/Dog/Big Fish");
 	 const name = prompt("Enter animal name:");
 	 const location = prompt("Enter animal location:");
-	 const size = parseInt(prompt("Enter animal size (in kg):"));
+	 
+	 const size = prompt("Enter animal size (in kg):");
+
+	
+
+	 const sizeValidationError = Animal.validateSize(size);
+
+	 if (sizeValidationError) {
+
+		      alert(sizeValidationError);
+
+		      return; // Exit function if validation fails
+
+	 }
+
 	 const type=prompt("enter type bigCat/dog/bigFish");
 	 
 	 defaultImage=type+".jpg";
@@ -274,7 +285,16 @@ function handleEdit(species,animalName, animalType) {
 
 	const newName = prompt("Edit Name:", animal.name) || animal.name;
     const newLocation = prompt("Edit Location:", animal.location) || animal.location;
-    const newSize = parseFloat(prompt("Edit Size:", animal.size)) || animal.size;
+
+	const newSize = prompt("Edit Size:", animal.size);
+	const sizeValidationError = Animal.validateSize(newSize);
+
+	if (sizeValidationError) {
+
+		alert(sizeValidationError);
+		return; // Exit function if validation fails
+
+	}
     const newImage = prompt("Edit Image URL:", animal.image) || animal.image;
     const newType = prompt("Edit Animal Type (bigCat/dog/bigFish):", animal.type) || animal.type;
 
