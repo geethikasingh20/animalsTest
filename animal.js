@@ -42,8 +42,6 @@ class Animal {
     row.appendChild(imageCell);
     row.appendChild(actionCell);
 	
-	//alert("before edit"+this.name);
-
 	  
     return row;
   }
@@ -56,13 +54,12 @@ class Animal {
 // Specific Animal Types (BigCat, Dog, BigFish)
 class BigCat extends Animal {
   constructor(species,name, location, size, image) {
-	//alert("cons big cat"+location);
+	
     super(species,name, location, size, image, 'bigCat');
   }
 
   getStyledName() {
-   // return `<strong>${this.name}</strong>`; // Display name in bold
-  
+ 
    return this.name;
    }
 }
@@ -97,7 +94,6 @@ class AnimalTable {
   }
   
   editAnimalTest(oldName) {
-  //alert("editAnimal...");
   const animal = this.data.find(a => a.name === oldName);
 
      if (animal) {
@@ -120,15 +116,13 @@ class AnimalTable {
    
    editAnimal(species,name,newName, location, size, image, type) {
        const animal = this.data.find(animal => animal.name === name);
-       if (animal) { //alert("deb1 ");
+       if (animal) {
 		animal.species=species;
 		animal.name = newName;
          animal.location = location;
          animal.size = size;
          animal.image = image;
          animal.animalType = type;
-		// alert("deb2 ");
-		 //alert(animal.location+animal.size+animal.animalType);
 		 
          this.render();
        }
@@ -170,7 +164,7 @@ class AnimalTable {
 
 
   // Sort animals by field - big cat1
-  sortBy(field) {alert("soritng");
+  sortBy(field) {
     this.data.sort((a, b) => {
   	
       if (field === "size") {
@@ -276,8 +270,6 @@ function handleEdit(species,animalName, animalType) {
   let animalTable;
   let animal = null;
 
-  //alert("handleEdit");
-  
   // Find the correct table to edit the animal
   if (animalType === 'bigCat') {
     animalTable = bigCatTable;
