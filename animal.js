@@ -219,15 +219,15 @@ class AnimalTable {
   }
 
   // Add a new animal
-  addAnimal(species,name, location, size, type) {
+  addAnimal(species,name, location, size,image, type) {
     let newAnimal;
     if (type === this.animalType) {
       if (type === 'bigCat') {
-        newAnimal = new BigCat(species,name, location, size, "tiger1.jpg");
+        newAnimal = new BigCat(species,name, location, size, image);
       } else if (type === 'dog') {
-        newAnimal = new Dog(species,name, location, size, "rottweiler.jpg");
+        newAnimal = new Dog(species,name, location, size, image);
       } else if (type === 'bigFish') {
-        newAnimal = new BigFish(species,name, location, size, "whale.jpg");
+        newAnimal = new BigFish(species,name, location, size, image);
       }
       this.data.push(newAnimal);
       this.render(); // Re-render the table after adding
@@ -247,20 +247,25 @@ bigFishTable.loadData();
 
 // Add a new animal to the correct table
 document.getElementById('add-animal').addEventListener('click', () => {
+	let defaultImage;
 
-	const species = prompt("Enter animal species:");
+	const species = prompt("Enter animal species: Big Cats/Dog/Big Fish");
 	 const name = prompt("Enter animal name:");
 	 const location = prompt("Enter animal location:");
 	 const size = parseInt(prompt("Enter animal size (in kg):"));
-	// const image = prompt("Enter image URL:");
 	 const type=prompt("enter type bigCat/dog/bigFish");
 	 
+	 defaultImage=type+".jpg";
+
+	 const image = prompt("Enter image URL:",defaultImage);
+
+	 
 	 if (type === 'bigCat') {
-	    bigCatTable.addAnimal(species,name, location, size, type);
+	    bigCatTable.addAnimal(species,name, location,size, image, type);
 	  } else if (type === 'dog') {
-	    dogTable.addAnimal(species,name, location, size, type);
+	    dogTable.addAnimal(species,name, location,size,  image,type);
 	  } else if (type === 'bigFish') {
-	    bigFishTable.addAnimal(species,name, location, size, type);
+	    bigFishTable.addAnimal(species,name, location,size,  image,type);
 	  }
 	  
 	  
