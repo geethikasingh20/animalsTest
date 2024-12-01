@@ -1,5 +1,4 @@
 // Base Animal class
-//Edit and delete working
 class Animal {
   constructor(species,name, location, size, image, type) {
 	this.species=species;
@@ -10,11 +9,11 @@ class Animal {
     this.type = type;
   }
   
-  renderRow() {
+  //to render individual row of each table
+  renderRecord() {
     const row = document.createElement('tr');
 	
-	const speciesCell=document.createElement("td");
-	
+	const speciesCell=document.createElement("td");	
     const nameCell = document.createElement('td');
     const locationCell = document.createElement('td');
     const sizeCell = document.createElement('td');
@@ -24,11 +23,9 @@ class Animal {
 	speciesCell.innerHTML=this.species;
     nameCell.innerHTML = this.getStyledName();
     locationCell.innerText = this.location;
-    sizeCell.innerText = this.size;
-	
+    sizeCell.innerText = this.size;		
 	imageCell.innerHTML = `<img src="${this.image}" alt="${this.name}" height="150" width="150"/>`;
 
-		  
 	 
 	actionCell.innerHTML = `
 	     <button class="btn btn-warning btn-sm" onclick="handleEdit('${this.species}','${this.name}', '${this.type}')">Edit</button>
@@ -36,31 +33,28 @@ class Animal {
 	   `;
 
 	row.appendChild(speciesCell);
-    row.appendChild(nameCell);
-   
+    row.appendChild(nameCell);   
     row.appendChild(sizeCell);
 	row.appendChild(locationCell);
     row.appendChild(imageCell);
     row.appendChild(actionCell);
-	
 	  
     return row;
   }
 
   getStyledName() {
-    return this.name; // You can override this in subclasses for styling (e.g., bold, italic)
+    return this.name; 
   }
 }
 
-// Specific Animal Types (BigCat, Dog, BigFish)
+// child classes (BigCat, Dog, BigFish)
 class BigCat extends Animal {
   constructor(species,name, location, size, image) {
 	
     super(species,name, location, size, image, 'bigCat');
   }
 
-  getStyledName() {
- 
+  getStyledName() {  
    return this.name;
    }
 }
@@ -90,11 +84,16 @@ class AnimalTable {
   constructor(animalType) {
     this.animalType = animalType; // The type of animal (bigCat, dog, bigFish)
     this.data = [];
-    this.sortedBy = 'name'; // Default sorting by name
-    this.sortDirection = 'asc'; // Default sort direction: ascending
+    this.sortedBy = 'name'; 
+	
+	this.sortDirection = {
+	     name: true,      // true for ascending, false for descending
+	     location: true,  
+	     size: true,      
+	   };
   }
   
-  editAnimalTest(oldName) {
+ /* editAnimalTest(oldName) {
   const animal = this.data.find(a => a.name === oldName);
 
      if (animal) {
@@ -113,39 +112,40 @@ class AnimalTable {
 
        this.render(); // Re-render after editing
      }
-   }
-   
+   }*/
+   //Method to edit animal record
    editAnimal(species,name,newName, location, size, image, type) {
        const animal = this.data.find(animal => animal.name === name);
-       if (animal) {
+       if (animal) { 
 		animal.species=species;
 		animal.name = newName;
          animal.location = location;
          animal.size = size;
          animal.image = image;
          animal.animalType = type;
-		 
+		
          this.render();
        }
-     }
+     } 
 	 
+	 //Method to remove animal entry from UI
 	 deleteAnimal(name) {
 	     this.data = this.data.filter(animal => animal.name !== name);
 	     this.render();
 	   }
 
-  async loadData() {
-    try {
+	//Performs loading of data in async mode   
+  	async loadData() {
+    	try {
 	  
-      const response = await fetch(`${this.animalType}.json`);  // Path to your JSON file
-      const animalsJson = await response.json();
+      	const response = await fetch(`${this.animalType}.json`);  // Path to your JSON file
+      	const animalsJson = await response.json();
 
-      // Filter the data based on animal type
-      this.data = animalsJson.filter(animalData => animalData.type === this.animalType)
+      	// Filter the data based on animal type
+      	this.data = animalsJson.filter(animalData => animalData.type === this.animalType)
                              .map(animalData => {
                                switch (animalData.type) {
-                                 case 'bigCat':
-									
+                                 case 'bigCat':									
                                    return new BigCat(animalData.Species,animalData.name, animalData.location, animalData.size, animalData.image);
                                  case 'dog':
                                    return new Dog(animalData.Species,animalData.name, animalData.location, animalData.size, animalData.image);
@@ -156,57 +156,46 @@ class AnimalTable {
                                }
                              });
 
-      this.render(); // Render the table after loading data
-    } catch (error) {
-      console.error("Error loading animal data:", error);
-    }
-  }
+      	this.render(); // Render the table after loading data
+   	 	} catch (error) {
+      		console.error("Error loading animal data:", error);
+    	}
+  	}
   
+  // Sort the data by name
+    sortByColumn(column) {
+		const sortOrder = this.sortDirection[column];
+		
+		this.data.sort((a, b) => {
+		      if (column === 'name') {
+		        return sortOrder ? a.name.localeCompare(b.name) : b.name.localeCompare(a.name);
+		      } else if (column === 'location') {
+		        return sortOrder ? a.location.localeCompare(b.location) : b.location.localeCompare(a.location);
+		      } else if (column === 'size') {
+		        return sortOrder ? a.size - b.size : b.size - a.size;
+		      }
+		      return 0;
+		    });
 
-
-  // Sort animals by field - big cat1
-  sortBy(field) {
-    this.data.sort((a, b) => {
-  	
-      if (field === "size") {
-        return a.size - b.size; // Sort by size numerically
-      }
-      return a[field].localeCompare(b[field]); // Sort by name or location alphabetically
-    });
-  }
-
+		    // Toggle sorting direction
+		    this.sortDirection[column] = !sortOrder;
+			
+		    this.render();
+    }
+	
+	// Update the sort icon based on the sorting state
+	 updateSortIcons() {
+		var sortIcons=['name', 'location', 'size'];
+		
+		sortIcons.forEach(column => {
+		      let iconElement = document.getElementById(`${column}-sort-icon-${this.animalType}`);
+			 			
+		      iconElement.innerHTML = this.sortDirection[column] ? '&#8593;' : '&#8595;';
+			  
+		    });	 
+	 }
+	
   
-  // Sort the animals based on selected field
-  sortAnimals(field) {
-    // Toggle sort direction
-    if (this.sortedBy === field) {
-      this.sortDirection = this.sortDirection === 'asc' ? 'desc' : 'asc';
-    } else {
-      this.sortedBy = field;
-      this.sortDirection = 'asc'; // Default to ascending on a new sort field
-    }
-
-    this.data.sort((a, b) => {
-      if (this.sortDirection === 'asc') {
-        return this.compareValues(a, b, field);
-      } else {
-        return this.compareValues(b, a, field);
-      }
-    });
-
-    this.render(); // Re-render the table after sorting
-  }
-
-  // Comparison function based on field (name, location, or size)
-  compareValues(a, b, field) {
-    if (field === 'name' || field === 'location') {
-      return a[field].localeCompare(b[field]);
-    } else if (field === 'size') {
-      return a[field] - b[field];
-    }
-    return 0;
-  }
-
   // Render the animal data into the table
   render() {
    
@@ -214,12 +203,14 @@ class AnimalTable {
     tableBody.innerHTML = '';  // Clear existing rows
 
     this.data.forEach(animal => {
-      tableBody.appendChild(animal.renderRow());
+      tableBody.appendChild(animal.renderRecord());
     });
+	this.updateSortIcons();
+	
   }
 
   // Add a new animal
-  addAnimal(species,name, location, size,image, type) {
+  addAnimal(species,name, location, size, image, type) {
     let newAnimal;
     if (type === this.animalType) {
       if (type === 'bigCat') {
@@ -234,21 +225,12 @@ class AnimalTable {
     }
   }
 }
+//End of class AnimalTable
 
-// Initialize tables for each animal type
-const bigCatTable = new AnimalTable('bigCat');
-const dogTable = new AnimalTable('dog');
-const bigFishTable = new AnimalTable('bigFish');
-
-// Load data from JSON and render tables
-bigCatTable.loadData();
-dogTable.loadData();
-bigFishTable.loadData();
 
 // Add a new animal to the correct table
 document.getElementById('add-animal').addEventListener('click', () => {
 	let defaultImage;
-
 	const species = prompt("Enter animal species: Big Cats/Dog/Big Fish");
 	 const name = prompt("Enter animal name:");
 	 const location = prompt("Enter animal location:");
@@ -256,27 +238,27 @@ document.getElementById('add-animal').addEventListener('click', () => {
 	 const type=prompt("enter type bigCat/dog/bigFish");
 	 
 	 defaultImage=type+".jpg";
-
 	 const image = prompt("Enter image URL:",defaultImage);
-
+	 
 	 
 	 if (type === 'bigCat') {
-	    bigCatTable.addAnimal(species,name, location,size, image, type);
+	    bigCatTable.addAnimal(species,name, location, size, image,type);
 	  } else if (type === 'dog') {
-	    dogTable.addAnimal(species,name, location,size,  image,type);
+	    dogTable.addAnimal(species,name, location, size, image,type);
 	  } else if (type === 'bigFish') {
-	    bigFishTable.addAnimal(species,name, location,size,  image,type);
+	    bigFishTable.addAnimal(species,name, location, size, image,type);
 	  }
 	  
 	  
 });
 
-
+//Global fundtion to handle edit functionality
 function handleEdit(species,animalName, animalType) {
+	
   let animalTable;
   let animal = null;
 
-  // Find the correct table to edit the animal
+  // Find the correct animal table to perform edit the animal
   if (animalType === 'bigCat') {
     animalTable = bigCatTable;
   } else if (animalType === 'dog') {
@@ -289,8 +271,8 @@ function handleEdit(species,animalName, animalType) {
   animal = animalTable.data.find(a => a.name === animalName);
 
   if (animal) {
-    // Prompt for the new values
-    const newName = prompt("Edit Name:", animal.name) || animal.name;
+
+	const newName = prompt("Edit Name:", animal.name) || animal.name;
     const newLocation = prompt("Edit Location:", animal.location) || animal.location;
     const newSize = parseFloat(prompt("Edit Size:", animal.size)) || animal.size;
     const newImage = prompt("Edit Image URL:", animal.image) || animal.image;
@@ -319,66 +301,42 @@ function handleDelete(animalName, animalType) {
 }
 
 //Sorting
-document.getElementById('sort-cat-species').addEventListener('click', () => {
-	
-	 bigCatTable.sortBy("species");  
-	 bigCatTable.render();
-	
- 
+document.getElementById('name-header-bigCat').addEventListener('click', () => {
+  bigCatTable.sortByColumn('name');
 });
 
-document.getElementById('sort-cat-name').addEventListener('click', () => {
-	
-	 bigCatTable.sortBy("name");  
-	 bigCatTable.render();
-	
- 
+document.getElementById('location-header-bigCat').addEventListener('click', () => {
+  bigCatTable.sortByColumn('location');
 });
 
+document.getElementById('size-header-bigCat').addEventListener('click', () => {
+  bigCatTable.sortByColumn('size');
+});
 
-document.getElementById('sort-cat-location').addEventListener('click', () => {
+// Add event listeners for each column header to trigger sorting for Dog table
+document.getElementById('name-header-dog').addEventListener('click', () => {
+  dogTable.sortByColumn('name');
+});
 
-	 bigCatTable.sortBy("location");  
-	 bigCatTable.render();
-	
- 
+document.getElementById('location-header-dog').addEventListener('click', () => {
+  dogTable.sortByColumn('location');
 });
 
 
 
-document.getElementById('sort-cat-size').addEventListener('click', () => {
-	
-	 bigCatTable.sortBy("size");  
-	 bigCatTable.render();
-	
- 
-});
+// Add event listeners for each column header to trigger sorting for BigFish table
 
-//sorting - dog
-
-document.getElementById('sort-dog-name').addEventListener('click', () => {
-	
-	 dogTable.sortBy("name");  
-	 dogTable.render();
-	
- 
+document.getElementById('size-header-bigFish').addEventListener('click', () => {
+  bigFishTable.sortByColumn('size');
 });
 
 
-document.getElementById('sort-dog-location').addEventListener('click', () => {
+// Initialize tables for each animal type
+const bigCatTable = new AnimalTable('bigCat');
+const dogTable = new AnimalTable('dog');
+const bigFishTable = new AnimalTable('bigFish');
 
-	 dogTable.sortBy("location");  
-	 dogTable.render();
-	
- 
-});
-
-
-document.getElementById('sort-fish-size').addEventListener('click', () => {
-
-	 bigFishTable.sortBy("size");  
-	 bigFishTable.render();
-	
- 
-});
-
+// Load data from JSON and render tables
+bigCatTable.loadData();
+dogTable.loadData();
+bigFishTable.loadData();
