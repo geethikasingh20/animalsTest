@@ -25,6 +25,7 @@ class Animal {
     nameCell.innerHTML = this.getStyledName();
     locationCell.innerText = this.location;
     sizeCell.innerText = this.size;
+	
 	imageCell.innerHTML = `<img src="${this.image}" alt="${this.name}" height="150" width="150"/>`;
 
 		  
