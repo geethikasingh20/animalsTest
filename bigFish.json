@@ -1,0 +1,26 @@
+[
+  {
+    "Species": "Big Fish",
+    "name": "Humpback Whale",
+    "size": 15,
+    "location": "Atlantic Ocean",
+    "image":"whale.jpg",
+    "type":"bigFish"
+     },
+  {
+   "Species": "Big Fish",
+    "name": "Killer Whale",
+    "size": 12,
+   "location": "Atlantic Ocean",
+     "image":"whale.jpg",
+  "type":"bigFish"
+  },
+  {
+   "Species": "Big Fish",
+      "name": "Tiger Shark",
+     "size": 8,
+        "location": "Ocean",
+  "image":"whale.jpg",
+      "type":"bigFish"
+  }
+]

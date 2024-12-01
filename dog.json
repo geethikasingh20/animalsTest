@@ -1,0 +1,27 @@
+[
+  {
+    "Species": "Dog",
+    "name": "Rotwailer",
+    "size": 2,
+    "location": "Germany",
+    "image":"rottweiler.jpg",
+    "type":"dog"
+     },
+  {
+    "Species": "Dog",
+    "name": "German Shepherd",
+    "size": 2,
+
+   "location": "Germany",
+   "image":"rottweiler.jpg",
+    "type":"dog"
+  },
+  {
+    "Species": "Dog",
+      "name": "Labrodar",
+     "size": 2,
+        "location": "UK",
+   "image":"rottweiler.jpg",
+    "type":"dog"
+  }
+]
