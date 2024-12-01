@@ -61,6 +61,30 @@ class Animal {
 
       return null; // No error, size is valid
     }
+	
+	//check duplicate entry
+	static checkDuplicateAnimal(species,name, location, size,type) {
+		   	
+		    const tableBody = document.getElementById(type+'-table');
+		    const rows = tableBody.getElementsByTagName('tr');
+
+		    // Check if any row's name matches the new name
+		    for (let row of rows) {
+			  const speciesCell = row.cells[0].innerHTML;
+			  const nameCell = row.cells[1].textContent; 
+			  const sizeCell=row.cells[2].innerHTML;
+			  const locationCell =row.cells[3].innerHTML;
+			 
+			
+		      if ((speciesCell === species) &&
+		  		(nameCell  === name) &&
+				(sizeCell  === size) &&
+				(locationCell  === location) ) {
+		        return true; // Duplicate found				
+		      }
+		    }
+		    return false; // No duplicate found
+	 }	
 }
 
 // child classes (BigCat, Dog, BigFish)
@@ -208,15 +232,28 @@ class AnimalTable {
 
   // Add a new animal
   addAnimal(species,name, location, size, image, type) {
-    let newAnimal;
+   let newAnimal;
+	let duplicateError;
+	
     if (type === this.animalType) {
-      if (type === 'bigCat') {
-        newAnimal = new BigCat(species,name, location, size, image);
-      } else if (type === 'dog') {
-        newAnimal = new Dog(species,name, location, size, image);
-      } else if (type === 'bigFish') {
-        newAnimal = new BigFish(species,name, location, size, image);
-      }
+	  if(!Animal.checkDuplicateAnimal(species,name, location, size,type)){
+		if (type === 'bigCat') { 
+			newAnimal = new BigCat(species,name, location, size, image);
+			}
+		if (type === 'dog') {
+			newAnimal = new Dog(species,name, location, size, image);
+			}
+		if (type === 'bigFish') {
+				newAnimal = new BigFish(species,name, location, size, image);	
+		}		
+			
+	   }
+	   else{
+		duplicateError="Duplicate animal";
+		return alert(duplicateError) ;				
+	   }
+	   
+	  
       this.data.push(newAnimal);
       this.render(); // Re-render the table after adding
     }
@@ -230,14 +267,10 @@ document.getElementById('add-animal').addEventListener('click', () => {
 	let defaultImage;
 	const species = prompt("Enter animal species: Big Cats/Dog/Big Fish");
 	 const name = prompt("Enter animal name:");
-	 const location = prompt("Enter animal location:");
-	 
+	 const location = prompt("Enter animal location:");	 
 	 const size = prompt("Enter animal size (in kg):");
 
-	
-
 	 const sizeValidationError = Animal.validateSize(size);
-
 	 if (sizeValidationError) {
 
 		      alert(sizeValidationError);
@@ -252,12 +285,24 @@ document.getElementById('add-animal').addEventListener('click', () => {
 	 const image = prompt("Enter image URL:",defaultImage);
 	 
 	 
-	 if (type === 'bigCat') {
+	 if (species==="Big Cats" && type === 'bigCat') {
+
 	    bigCatTable.addAnimal(species,name, location, size, image,type);
-	  } else if (type === 'dog') {
+
+	  } else if (species==="Dogs" && type === 'dog') {
+
 	    dogTable.addAnimal(species,name, location, size, image,type);
-	  } else if (type === 'bigFish') {
+
+	  } else if (species==="Big Fishes" && type === 'bigFish') {
+
 	    bigFishTable.addAnimal(species,name, location, size, image,type);
+
+	  }
+
+	  else{
+
+		return alert("Please enter a valid species/animal type");
+
 	  }
 	  
 	  
