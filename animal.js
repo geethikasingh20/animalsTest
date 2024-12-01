@@ -252,7 +252,7 @@ document.getElementById('add-animal').addEventListener('click', () => {
 	 const location = prompt("Enter animal location:");
 	 const size = parseInt(prompt("Enter animal size (in kg):"));
 	// const image = prompt("Enter image URL:");
-	 const type=prompt("enter type");
+	 const type=prompt("enter type bigCat/dog/bigFish");
 	 
 	 if (type === 'bigCat') {
 	    bigCatTable.addAnimal(species,name, location, size, type);
