@@ -287,22 +287,6 @@ document.getElementById('add-animal').addEventListener('click', () => {
 	  return; // Exit if name is empty
 
 	}
-	if(!(species==="Big Cats" || species==="Dogs" ||
-
-		species==="Big Fishes")){
-
-			alert("Has to be one among Big Cats/Dogs/Big Fishes (Take care of spaces/case)");
-
-			return;
-
-		 }	
-
-		
-
-		
-
-	 
-
 	 const name = prompt("Enter animal name:");
 
 	 if(validateNonEmpty(name)){
