@@ -269,27 +269,106 @@ class AnimalTable {
 
 // Add a new animal to the correct table
 document.getElementById('add-animal').addEventListener('click', () => {
+	
 	let defaultImage;
-	const species = prompt("Enter animal species: Big Cats/Dog/Big Fish");
+
+	let errorMsg="can't be empty";
+
+	
+
+	const species = prompt("Enter animal species: Big Cats/Dogs/Big Fishes (Take care of spaces/case)");
+
+	let error = validateNonEmpty(species)  ? errorMsg : null;
+
+	if (error) {
+
+	  alert(error);
+
+	  return; // Exit if name is empty
+
+	}
+
+	
+
+	if(!(species==="Big Cats" || species==="Dogs" ||
+
+		species==="Big Fishes")){
+
+			alert("Has to be one among Big Cats/Dogs/Big Fishes (Take care of spaces/case)");
+
+			return;
+
+		 }	
+
+		
+
+		
+
+	 
+
 	 const name = prompt("Enter animal name:");
-	 const location = prompt("Enter animal location:");	 
-	 const size = prompt("Enter animal size (in kg):");
+
+	 if(validateNonEmpty(name)){
+
+	 		alert("Can not be empty");
+
+	 		return;
+
+	 	}
+
+	
+
+	 const location = prompt("Enter animal location:");
+
+	 if(validateNonEmpty(location)){
+
+	 		alert("Can not be empty");
+
+	 		return;
+
+	 	}
+
+		
+
+	 const size = prompt("Enter animal size (in kg):");	
 
 	 const sizeValidationError = Animal.validateSize(size);
+
 	 if (sizeValidationError) {
 
 		      alert(sizeValidationError);
 
 		      return; // Exit function if validation fails
-
 	 }
+	 
+	  const type=prompt("enter type bigCat/dog/bigFish");
 
-	 const type=prompt("enter type bigCat/dog/bigFish");
+	 if(validateNonEmpty(type)){
+
+	 		alert("Can not be empty");
+
+	 		return;
+
+	 	}
+
 	 
+
 	 defaultImage=type+".jpg";
+
 	 const image = prompt("Enter image URL:",defaultImage);
-	 
-	 
+
+	 if(validateNonEmpty(image)){
+
+	 		alert("Can not be empty ,adding default image");
+
+			image=defaultImage;
+
+	 		
+
+	 	}
+
+	
+
 	 if (species==="Big Cats" && type === 'bigCat') {
 
 	    bigCatTable.addAnimal(species,name, location, size, image,type);
@@ -309,6 +388,8 @@ document.getElementById('add-animal').addEventListener('click', () => {
 		return alert("Please enter a valid species/animal type");
 
 	  }
+
+	  
 	  
 	  
 });
@@ -353,7 +434,36 @@ function handleEdit(species,animalName, animalType) {
   }
 }
 
+//Checks if field is empty or not
+function validateNonEmpty(field){
 
+	let errorflag=null;
+
+	if (field === "") {
+
+	    // The input field was empty, OK pressed
+
+		errorflag=true;
+
+	} else if (field) {
+
+	    // user typed something and hit OK
+
+		errorflag=false;
+
+	} else {
+
+	    // user hit cancel
+
+		errorflag=true;
+
+	}
+
+	return errorflag;
+
+}
+
+//Handles delete operation
 function handleDelete(animalName, animalType) {
   let animalTable;
 
