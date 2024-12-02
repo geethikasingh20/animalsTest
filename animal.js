@@ -287,13 +287,6 @@ document.getElementById('add-animal').addEventListener('click', () => {
 	  return; // Exit if name is empty
 
 	}
-
-	
-       alert("species " + species);
-	alert(species==="Big Cats");
-	alert(!(species==="Big Cats" || species==="Dogs" ||
-
-		species==="Big Fishes"));
 	if(!(species==="Big Cats" || species==="Dogs" ||
 
 		species==="Big Fishes")){
